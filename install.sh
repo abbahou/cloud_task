@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#  usage : installsh [nginx/apache]
-WEB_SERVER="$1" 
+# Usage: installsh [nginx/apache2]
+WEB_SERVER="$1"
 WEB_ROOT="/var/www/html"
 WEB_PAGE="${WEB_ROOT}/index.html"
 OS_VERSION=$(uname -a)
-PUBLIC_IP=$(curl ifconfig.me)
+PUBLIC_IP=$(curl -s ifconfig.me)
 
 install_nginx() {
     echo "Installing Nginx..."
@@ -13,6 +13,11 @@ install_nginx() {
     sudo apt install -y nginx
     sudo systemctl enable nginx
     sudo systemctl start nginx
+
+    
+    if [ -f "/var/www/html/index.nginx-debian.html" ]; then
+        sudo rm -f "/var/www/html/index.nginx-debian.html"
+    fi
 }
 
 install_apache() {
@@ -77,11 +82,11 @@ create_web_page() {
 <body>
     <h1>Hello World</h1>
     <div class="os-container">
-        <p> current OS version is:</p>
+        <p>Current OS version is:</p>
         <p class="highlight">${OS_VERSION}</p>
     </div>
     <footer>
-        Powered  Powered by ${$1} | AWS EC2 |Bash 
+        Powered by <span class="highlight">${WEB_SERVER}</span> | AWS EC2 | Bash
     </footer>
 </body>
 </html>
@@ -102,7 +107,7 @@ restart_web_server() {
 }
 
 
-echo "Starting the web server ..."
+echo "Starting the web server setup..."
 if [ "$WEB_SERVER" == "nginx" ]; then
     install_nginx
 elif [ "$WEB_SERVER" == "apache2" ]; then
