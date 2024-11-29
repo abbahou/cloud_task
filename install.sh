@@ -116,4 +116,4 @@ create_web_page
 configure_firewall
 restart_web_server
 
-echo "Web server setup complete. Access your web page at http://${${PUBLIC_IP}}"
+echo "Web server setup complete. Access your web page at http://${PUBLIC_IP}"
